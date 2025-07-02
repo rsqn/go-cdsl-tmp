@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cdsl>
+    <flow id="kycProcess" defaultStep="collectCustomerInfo" errorStep="handleError">
+        <!-- Step 1: Collect customer information -->
+        <step id="collectCustomerInfo">
+            <setState val="Alive"/>
+            <setVar name="status" val="collecting_info"/>
+            <collectCustomerInfo name="John Doe" age="35" transactionValue="3000" countryCode="US"/>
+            <routeTo target="validateCustomerInfo"/>
+        </step>
+
+        <!-- Step 2: Validate customer information -->
+        <step id="validateCustomerInfo">
+            <setVar name="status" val="validating_info"/>
+            <validateCustomerInfo strictValidation="false"/>
+            <routeTo target="checkRiskLevel"/>
+        </step>
+
+        <!-- Step 3: Check risk level -->
+        <step id="checkRiskLevel">
+            <setVar name="status" val="checking_risk"/>
+            <riskAssessment customerAge="35" transactionValue="3000" countryCode="US"/>
+            <routeTo target="documentVerification"/>
+        </step>
+
+        <!-- Step 4: Document verification -->
+        <step id="documentVerification">
+            <setVar name="status" val="verifying_documents"/>
+            <documentVerification documentType="passport" documentId="123456789"/>
+            <routeTo target="checkSanctionsList"/>
+        </step>
+
+        <!-- Step 5: Check sanctions list -->
+        <step id="checkSanctionsList">
+            <setVar name="status" val="checking_sanctions"/>
+            <sanctionsCheck checkType="standard"/>
+            <routeTo target="performAmlCheck"/>
+        </step>
+
+        <!-- Step 6: Perform AML check -->
+        <step id="performAmlCheck">
+            <setVar name="status" val="performing_aml_check"/>
+            <amlCheck checkLevel="standard"/>
+            <routeTo target="finalDecision"/>
+        </step>
+
+        <!-- Step 7: Make final decision -->
+        <step id="finalDecision">
+            <setVar name="status" val="making_decision"/>
+            <finalDecision autoApprove="true"/>
+            <routeTo target="complete"/>
+        </step>
+
+        <!-- Step 8: Complete KYC process -->
+        <step id="complete">
+            <setVar name="status" val="completed"/>
+            <endRoute/>
+            <finally>
+                <setState val="End"/>
+            </finally>
+        </step>
+
+        <!-- Error handling step -->
+        <step id="handleError">
+            <setVar name="status" val="error"/>
+            <setVar name="errorMessage" val="An error occurred during the KYC process"/>
+            <endRoute/>
+            <finally>
+                <setState val="Error"/>
+            </finally>
+        </step>
+    </flow>
+</cdsl>

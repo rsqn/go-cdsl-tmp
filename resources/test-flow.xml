@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cdsl>
+    <flow id="shouldRunHelloWorldAndEndRoute" defaultStep="init" errorStep="error">
+        <step id="init">
+            <setState val="Alive"/>
+            <sayHello name="Go"/>
+            <setVar name="myVar" val="myVal"/>
+            <routeTo target="end"/>
+        </step>
+
+        <step id="end">
+            <endRoute/>
+            <finally>
+                <setState val="End"/>
+            </finally>
+        </step>
+    </flow>
+</cdsl>
